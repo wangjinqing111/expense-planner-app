@@ -112,7 +112,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   controller: _titleController,
                   decoration: const InputDecoration(
                     labelText: '支出标题',
-                    hintText: '例如：午餐、打车费0',
+                    hintText: '例如：午餐、打车费',
                     prefixIcon: Icon(Icons.title),
                   ),
                   maxLength: 50,
