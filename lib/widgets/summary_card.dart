@@ -5,6 +5,9 @@ import '../core/constants/app_colors.dart';
 import '../core/constants/app_spacing.dart';
 
 /// 汇总卡片组件
+///
+/// 卡片式布局便于用户快速扫视关键数据
+/// CategorySummaryItem 包含进度条，直观展示占比关系
 class SummaryCard extends StatelessWidget {
   final String title;
   final double totalAmount;

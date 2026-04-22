@@ -4,6 +4,9 @@ import '../core/constants/app_spacing.dart';
 import '../data/models/category.dart';
 
 /// 分类标签组件
+///
+/// isSelected 控制选中态样式，区分选中和未选中状态
+/// iconMap 硬编码而非动态获取，是为了减少运行时开销
 class CategoryChip extends StatelessWidget {
   final Category category;
   final bool isSelected;

@@ -4,6 +4,9 @@ import '../core/constants/app_colors.dart';
 import '../core/constants/app_spacing.dart';
 
 /// 空状态组件
+///
+/// 提供多种工厂方法覆盖常见空态场景，减少重复代码
+/// 包含操作按钮引导用户采取行动，降低空态时的困惑
 class EmptyState extends StatelessWidget {
   final IconData icon;
   final String title;

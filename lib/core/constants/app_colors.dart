@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 
 /// 应用颜色常量
+///
+/// 使用 Indigo 作为主色调，原因是色彩专业且温和，适合财务类应用长时间使用
+/// 语义化命名（primary/secondary/error）便于理解和维护
 class AppColors {
   AppColors._();
 

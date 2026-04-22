@@ -43,6 +43,9 @@ final summaryPeriodProvider = StateProvider<SummaryPeriod>((ref) {
 }
 
 /// 汇总数据提供者
+///
+/// _getPeriodRange 统一处理日/周/月周期计算逻辑，避免重复代码
+/// autoRefreshSummaryProvider 监听支出列表变化自动刷新，保持汇总数据最新
 final summaryProvider = FutureProvider<ExpenseSummary>((ref) async {
   final repository = ref.watch(expenseRepositoryProvider);
   final period = ref.watch(summaryPeriodProvider);

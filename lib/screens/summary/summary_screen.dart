@@ -11,6 +11,9 @@ import '../../providers/summary_provider.dart';
 import '../../widgets/empty_state.dart';
 
 /// 汇总屏幕
+///
+/// 周期选择器提供日/周/月切换，快速切换时间维度
+/// 按金额排序的柱状图，帮助用户识别支出大户
 class SummaryScreen extends ConsumerWidget {
   const SummaryScreen({super.key});
 

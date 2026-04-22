@@ -5,6 +5,9 @@ import '../database/tables.dart';
 import '../models/category.dart';
 
 /// 分类仓库类
+///
+/// 删除前检查是否有关联支出，防止数据孤岛
+/// 提供强制删除方法 deleteWithExpenses，满足级联删除需求
 class CategoryRepository {
   final DatabaseHelper _databaseHelper;
 

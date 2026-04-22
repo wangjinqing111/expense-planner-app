@@ -13,6 +13,9 @@ import 'add_expense_screen.dart';
 import 'expense_detail_screen.dart';
 
 /// 支出列表屏幕
+///
+/// 筛选区域可折叠显示，避免占用过多空间
+/// 按日期分组显示，帮助用户按时间线回顾支出
 class ExpenseListScreen extends ConsumerStatefulWidget {
   const ExpenseListScreen({super.key});
 
@@ -48,10 +51,6 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
             child: _buildExpenseList(expenseState),
           ),
         ],
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddExpenseSheet(context),
-        child: const Icon(Icons.add),
       ),
     );
   }

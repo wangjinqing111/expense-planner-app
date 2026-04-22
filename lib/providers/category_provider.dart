@@ -4,6 +4,9 @@ import '../data/models/category.dart';
 import '../data/repositories/category_repository.dart';
 
 /// 分类仓库提供者
+///
+/// CategoryMapProvider 使用 map 结构实现 O(1) 查找，避免列表遍历
+/// categoryByIdProvider.family 支持按 ID 快速获取单个分类
 final categoryRepositoryProvider = Provider<CategoryRepository>((ref) {
   return CategoryRepository();
 });

@@ -7,6 +7,9 @@ import '../../data/models/category.dart';
 import '../../providers/category_provider.dart';
 
 /// 添加/编辑分类屏幕
+///
+/// 实时预览让用户在添加前看到效果，提升体验
+/// 颜色和图标组合可选，提供个性化分类能力
 class AddCategoryScreen extends ConsumerStatefulWidget {
   final Category? category; // 如果提供则是编辑模式
 

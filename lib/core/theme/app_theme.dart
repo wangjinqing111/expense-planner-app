@@ -3,6 +3,9 @@ import '../constants/app_colors.dart';
 import '../constants/app_spacing.dart';
 
 /// 应用主题配置
+///
+/// Material 3 提供更现代的组件外观，ColorScheme.fromSeed 确保色彩体系完整
+/// 暗色主题预留但未完全实现，避免首次上线代码膨胀
 class AppTheme {
   AppTheme._();
 

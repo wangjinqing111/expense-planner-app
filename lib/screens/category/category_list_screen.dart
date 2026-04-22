@@ -9,6 +9,9 @@ import '../../widgets/empty_state.dart';
 import 'add_category_screen.dart';
 
 /// 分类列表屏幕
+///
+/// 滑动删除带确认，防止误删
+/// 删除前检查是否有关联支出，有关联则不允许删除
 class CategoryListScreen extends ConsumerWidget {
   const CategoryListScreen({super.key});
 

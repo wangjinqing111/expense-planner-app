@@ -6,6 +6,9 @@ import '../models/expense.dart';
 import '../models/expense_summary.dart';
 
 /// 支出仓库类
+///
+/// 仓库模式封装数据访问逻辑，便于后续替换数据源（如从 SQLite 改为 HTTP API）
+/// getSummary 使用原始 SQL 的 GROUP BY，一次查询获取汇总，避免多次查询开销
 class ExpenseRepository {
   final DatabaseHelper _databaseHelper;
 

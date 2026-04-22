@@ -7,6 +7,9 @@ import '../data/models/expense.dart';
 import '../providers/category_provider.dart';
 
 /// 支出列表项组件
+///
+/// 使用 ConsumerWidget 而非 StatelessWidget，因为需要访问分类信息
+/// Dismissible 支持滑动删除，提供直观操作方式
 class ExpenseTile extends ConsumerWidget {
   final Expense expense;
   final VoidCallback? onTap;

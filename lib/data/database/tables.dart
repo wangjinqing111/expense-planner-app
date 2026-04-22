@@ -1,4 +1,7 @@
 /// 数据库表定义
+///
+/// 外键约束 ON DELETE CASCADE 确保删除分类时自动清理关联支出
+/// 为 date 和 category_id 创建索引，加速常用查询
 class Tables {
   Tables._();
 

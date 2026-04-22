@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 /// 分类模型
+///
+/// 使用 icon 字符串而非 IconData，因为字符串更便于数据库存储和序列化
+/// colorValue 存储整数值，运行时再转为 Color 对象
 class Category extends Equatable {
   /// 分类 ID
   final int? id;

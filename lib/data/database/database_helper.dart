@@ -6,6 +6,10 @@ import 'package:sqflite/sqflite.dart';
 import 'tables.dart';
 
 /// 数据库助手单例类
+///
+/// 单例模式确保数据库连接全局唯一，避免重复开链
+/// Web 平台使用内存数据库，是因为 sqflite 对 Web 的支持有限
+/// 首次创建时插入默认分类，保证用户有基础分类可用
 class DatabaseHelper {
   static DatabaseHelper? _instance;
   static Database? _database;

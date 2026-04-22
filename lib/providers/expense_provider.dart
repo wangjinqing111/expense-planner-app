@@ -52,6 +52,9 @@ class ExpenseListState {
 }
 
 /// 支出列表状态管理器
+///
+/// 操作成功后根据当前筛选条件决定重新加载哪个列表，保持筛选状态一致
+/// dismissible 滑动删除提供直观操作方式，符合移动端用户习惯
 class ExpenseListNotifier extends StateNotifier<ExpenseListState> {
   final ExpenseRepository _repository;
 

@@ -19,6 +19,9 @@ import '../category/category_list_screen.dart';
 import '../summary/summary_screen.dart';
 
 /// 首页屏幕
+///
+/// IndexedStack 保持各 tab 状态，避免每次切换重新构建
+/// addPostFrameCallback 确保数据加载在界面首次绘制后执行，避免阻塞
 class HomeScreen extends ConsumerStatefulWidget {
   const HomeScreen({super.key});
 

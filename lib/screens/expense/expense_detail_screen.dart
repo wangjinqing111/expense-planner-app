@@ -11,6 +11,9 @@ import '../../providers/summary_provider.dart';
 import 'add_expense_screen.dart';
 
 /// 支出详情屏幕
+///
+/// 底部弹窗形式展示，保留上下文便于用户快速返回
+/// 详情页直接提供编辑和删除入口，减少操作步骤
 class ExpenseDetailScreen extends ConsumerWidget {
   final int expenseId;
 

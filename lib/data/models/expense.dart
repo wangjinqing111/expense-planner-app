@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 /// 支出模型
+///
+/// 使用 Equatable 支持值比较，方便状态管理和性能优化
+/// 日期存储为 ISO8601 字符串，确保跨平台一致性
 class Expense extends Equatable {
   /// 支出 ID
   final int? id;

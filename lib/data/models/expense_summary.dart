@@ -1,6 +1,9 @@
 import 'package:equatable/equatable.dart';
 
 /// 支出汇总模型
+///
+/// byCategory 使用 Map<int, double> 而非列表，便于快速查找特定分类的金额
+/// 空汇总使用 factory 构造，简化初始状态处理
 class ExpenseSummary extends Equatable {
   /// 周期开始日期
   final DateTime periodStart;

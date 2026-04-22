@@ -12,6 +12,9 @@ import '../../providers/summary_provider.dart';
 import '../../widgets/category_chip.dart';
 
 /// 添加/编辑支出屏幕
+///
+/// 同一屏幕支持添加和编辑，通过 expense 参数区分模式
+/// 输入格式过滤确保金额只接受合理数值，防止输入异常
 class AddExpenseScreen extends ConsumerStatefulWidget {
   final Expense? expense; // 如果提供则是编辑模式
 
@@ -22,7 +25,7 @@ class AddExpenseScreen extends ConsumerStatefulWidget {
 }
 
 class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
-  final _formKey = GlobalKey<FormState>();
+  final _formKey = GlobalKey<FormState>(); // 表单状态管理，用于验证和提交
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
   final _noteController = TextEditingController();
@@ -109,9 +112,10 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   controller: _titleController,
                   decoration: const InputDecoration(
                     labelText: '支出标题',
-                    hintText: '例如：午餐、打车费',
+                    hintText: '例如：午餐、打车费0',
                     prefixIcon: Icon(Icons.title),
                   ),
+                  maxLength: 50,
                   textCapitalization: TextCapitalization.sentences,
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -128,12 +132,15 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                   decoration: const InputDecoration(
                     labelText: '金额',
                     hintText: '0.00',
-                    prefixIcon: Icon(Icons.attach_money),
+                    prefixIcon: Icon(Icons.currency_yen),
                   ),
-                  keyboardType:
-                      const TextInputType.numberWithOptions(decimal: true),
+                  keyboardType: const TextInputType.numberWithOptions(
+                    decimal: true,
+                  ),
                   inputFormatters: [
-                    FilteringTextInputFormatter.allow(RegExp(r'^\d+\.?\d{0,2}')),
+                    FilteringTextInputFormatter.allow(
+                      RegExp(r'^\d+\.?\d{0,2}'),
+                    ),
                   ],
                   validator: (value) {
                     if (value == null || value.trim().isEmpty) {
@@ -149,10 +156,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
                 const SizedBox(height: AppSpacing.md),
 
                 // 分类选择
-                Text(
-                  '选择分类',
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text('选择分类', style: theme.textTheme.titleSmall),
                 const SizedBox(height: AppSpacing.sm),
                 if (categoryState.isLoading)
                   const Center(child: CircularProgressIndicator())
@@ -261,9 +265,13 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
 
     bool success;
     if (isEditing) {
-      success = await ref.read(expenseListProvider.notifier).updateExpense(expense);
+      success = await ref
+          .read(expenseListProvider.notifier)
+          .updateExpense(expense);
     } else {
-      success = await ref.read(expenseListProvider.notifier).addExpense(expense);
+      success = await ref
+          .read(expenseListProvider.notifier)
+          .addExpense(expense);
     }
 
     if (success) {
