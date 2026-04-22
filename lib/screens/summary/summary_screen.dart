@@ -145,24 +145,29 @@ class SummaryScreen extends ConsumerWidget {
             color: AppColors.primary,
             child: Padding(
               padding: const EdgeInsets.all(AppSpacing.lg),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+              child: Row(
                 children: [
-                  Text(
-                    '总支出',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: Colors.white70,
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '总支出',
+                          style: theme.textTheme.bodyMedium?.copyWith(
+                            color: Colors.white70,
+                          ),
+                        ),
+                        const SizedBox(height: AppSpacing.sm),
+                        Text(
+                          currencyFormat.format(summary.totalAmount),
+                          style: theme.textTheme.displaySmall?.copyWith(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
                     ),
                   ),
-                  const SizedBox(height: AppSpacing.sm),
-                  Text(
-                    currencyFormat.format(summary.totalAmount),
-                    style: theme.textTheme.displaySmall?.copyWith(
-                      color: Colors.white,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                  const SizedBox(height: AppSpacing.xs),
                   Text(
                     '${summary.expenseCount} 笔支出',
                     style: theme.textTheme.bodySmall?.copyWith(

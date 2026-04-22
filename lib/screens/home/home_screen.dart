@@ -52,10 +52,7 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: IndexedStack(
-        index: _currentIndex,
-        children: _screens,
-      ),
+      body: IndexedStack(index: _currentIndex, children: _screens),
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: _currentIndex,
         onTap: (index) => setState(() => _currentIndex = index),
@@ -149,8 +146,10 @@ class _DashboardScreen extends ConsumerWidget {
                   summary.totalAmount,
                   summary.expenseCount,
                 ),
-                loading: () => _buildMonthTotalCard(context, 0, 0, isLoading: true),
-                error: (_, __) => _buildMonthTotalCard(context, 0, 0, hasError: true),
+                loading: () =>
+                    _buildMonthTotalCard(context, 0, 0, isLoading: true),
+                error: (_, __) =>
+                    _buildMonthTotalCard(context, 0, 0, hasError: true),
               ),
 
               const SizedBox(height: AppSpacing.md),
@@ -203,17 +202,11 @@ class _DashboardScreen extends ConsumerWidget {
               const SizedBox(height: AppSpacing.lg),
 
               // 分类支出排行
-              Text(
-                '分类支出',
-                style: theme.textTheme.titleMedium,
-              ),
+              Text('分类支出', style: theme.textTheme.titleMedium),
               const SizedBox(height: AppSpacing.sm),
               monthSummaryAsync.when(
-                data: (summary) => _buildCategorySummary(
-                  context,
-                  summary,
-                  categoryMap,
-                ),
+                data: (summary) =>
+                    _buildCategorySummary(context, summary, categoryMap),
                 loading: () => const Center(child: CircularProgressIndicator()),
                 error: (_, __) => const Center(child: Text('加载失败')),
               ),
@@ -224,10 +217,7 @@ class _DashboardScreen extends ConsumerWidget {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text(
-                    '最近支出',
-                    style: theme.textTheme.titleMedium,
-                  ),
+                  Text('最近支出', style: theme.textTheme.titleMedium),
                   TextButton(
                     onPressed: () {
                       // 导航到支出列表
@@ -250,8 +240,9 @@ class _DashboardScreen extends ConsumerWidget {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  itemCount:
-                      expenseState.expenses.length > 5 ? 5 : expenseState.expenses.length,
+                  itemCount: expenseState.expenses.length > 5
+                      ? 5
+                      : expenseState.expenses.length,
                   itemBuilder: (context, index) {
                     final expense = expenseState.expenses[index];
                     return Padding(
@@ -285,46 +276,49 @@ class _DashboardScreen extends ConsumerWidget {
       color: AppColors.primary,
       child: Padding(
         padding: const EdgeInsets.all(AppSpacing.lg),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        child: Row(
           children: [
-            Text(
-              '本月支出',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Colors.white70,
+            Expanded(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    '本月支出',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: Colors.white70,
+                    ),
+                  ),
+                  const SizedBox(height: AppSpacing.xs),
+                  if (isLoading)
+                    const SizedBox(
+                      height: 36,
+                      width: 20,
+                      child: CircularProgressIndicator(
+                        color: Colors.white,
+                        strokeWidth: 2,
+                      ),
+                    )
+                  else if (hasError)
+                    Text(
+                      '加载失败',
+                      style: theme.textTheme.headlineMedium?.copyWith(
+                        color: Colors.white,
+                      ),
+                    )
+                  else
+                    Text(
+                      currencyFormat.format(amount),
+                      style: theme.textTheme.displaySmall?.copyWith(
+                        color: Colors.white,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                ],
               ),
             ),
-            const SizedBox(height: AppSpacing.sm),
-            if (isLoading)
-              const SizedBox(
-                height: 36,
-                width: 20,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                  strokeWidth: 2,
-                ),
-              )
-            else if (hasError)
-              Text(
-                '加载失败',
-                style: theme.textTheme.headlineMedium?.copyWith(
-                  color: Colors.white,
-                ),
-              )
-            else
-              Text(
-                currencyFormat.format(amount),
-                style: theme.textTheme.displaySmall?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            const SizedBox(height: AppSpacing.xs),
             Text(
               '$count 笔支出',
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: Colors.white70,
-              ),
+              style: theme.textTheme.bodySmall?.copyWith(color: Colors.white70),
             ),
           ],
         ),
@@ -360,8 +354,9 @@ class _DashboardScreen extends ConsumerWidget {
             final category = categoryMap[entry.key];
             if (category == null) return const SizedBox.shrink();
 
-            final percentage =
-                totalAmount > 0 ? (entry.value / totalAmount) * 100 : 0.0;
+            final percentage = totalAmount > 0
+                ? (entry.value / totalAmount) * 100
+                : 0.0;
 
             return CategorySummaryItem(
               categoryName: category.name,
