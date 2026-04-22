@@ -133,17 +133,26 @@ class ExpenseListNotifier extends StateNotifier<ExpenseListState> {
   }
 
   /// 删除支出
+  ///
+  /// 采用乐观更新策略：先立即从 UI 移除项目，再执行数据库操作
+  /// 避免 setLoading(true) 导致的页面闪烁问题
   Future<bool> deleteExpense(int id) async {
+    final originalExpenses = state.expenses;
+
+    // 乐观更新：立即从列表中移除
+    state = state.copyWith(
+      expenses: state.expenses.where((e) => e.id != id).toList(),
+    );
+
     try {
       await _repository.delete(id);
-      if (state.hasFilters) {
-        await loadFilteredExpenses();
-      } else {
-        await loadExpenses();
-      }
       return true;
     } catch (e) {
-      state = state.copyWith(error: e.toString());
+      // 失败时恢复原始列表
+      state = state.copyWith(
+        error: e.toString(),
+        expenses: originalExpenses,
+      );
       return false;
     }
   }
