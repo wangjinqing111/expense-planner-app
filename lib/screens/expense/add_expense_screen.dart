@@ -247,8 +247,12 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
   }
 
   Future<void> _submit() async {
-    if (!_formKey.currentState!.validate()) return;
-    if (_selectedCategoryId == null) return;
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+    if (_selectedCategoryId == null) {
+      return;
+    }
 
     setState(() => _isLoading = true);
 
@@ -261,6 +265,7 @@ class _AddExpenseScreenState extends ConsumerState<AddExpenseScreen> {
       note: _noteController.text.trim().isEmpty
           ? null
           : _noteController.text.trim(),
+      createdAt: widget.expense?.createdAt,
     );
 
     bool success;

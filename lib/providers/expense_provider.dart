@@ -40,8 +40,9 @@ class ExpenseListState {
       expenses: expenses ?? this.expenses,
       isLoading: isLoading ?? this.isLoading,
       error: error,
-      selectedCategoryId:
-          clearCategoryId ? null : (selectedCategoryId ?? this.selectedCategoryId),
+      selectedCategoryId: clearCategoryId
+          ? null
+          : (selectedCategoryId ?? this.selectedCategoryId),
       startDate: clearDateRange ? null : (startDate ?? this.startDate),
       endDate: clearDateRange ? null : (endDate ?? this.endDate),
     );
@@ -88,8 +89,10 @@ class ExpenseListNotifier extends StateNotifier<ExpenseListState> {
       } else if (state.selectedCategoryId != null) {
         expenses = await _repository.getByCategory(state.selectedCategoryId!);
       } else if (state.startDate != null && state.endDate != null) {
-        expenses =
-            await _repository.getByDateRange(state.startDate!, state.endDate!);
+        expenses = await _repository.getByDateRange(
+          state.startDate!,
+          state.endDate!,
+        );
       } else {
         expenses = await _repository.getAll();
       }
@@ -118,8 +121,16 @@ class ExpenseListNotifier extends StateNotifier<ExpenseListState> {
 
   /// 更新支出
   Future<bool> updateExpense(Expense expense) async {
+    if (expense.id == null) {
+      state = state.copyWith(error: '支出 ID 不能为空，无法更新');
+      return false;
+    }
     try {
-      await _repository.update(expense);
+      final result = await _repository.update(expense);
+      if (result == 0) {
+        state = state.copyWith(error: '未找到要更新的支出记录');
+        return false;
+      }
       if (state.hasFilters) {
         await loadFilteredExpenses();
       } else {
@@ -149,10 +160,7 @@ class ExpenseListNotifier extends StateNotifier<ExpenseListState> {
       return true;
     } catch (e) {
       // 失败时恢复原始列表
-      state = state.copyWith(
-        error: e.toString(),
-        expenses: originalExpenses,
-      );
+      state = state.copyWith(error: e.toString(), expenses: originalExpenses);
       return false;
     }
   }
@@ -192,9 +200,9 @@ class ExpenseListNotifier extends StateNotifier<ExpenseListState> {
 /// 支出列表提供者
 final expenseListProvider =
     StateNotifierProvider<ExpenseListNotifier, ExpenseListState>((ref) {
-  final repository = ref.watch(expenseRepositoryProvider);
-  return ExpenseListNotifier(repository);
-});
+      final repository = ref.watch(expenseRepositoryProvider);
+      return ExpenseListNotifier(repository);
+    });
 
 /// 支出总数提供者
 final expenseCountProvider = FutureProvider<int>((ref) async {
