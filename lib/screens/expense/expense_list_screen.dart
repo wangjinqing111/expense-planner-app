@@ -36,7 +36,9 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
         title: const Text('支出列表'),
         actions: [
           IconButton(
-            icon: Icon(_showFilters ? Icons.filter_list_off : Icons.filter_list),
+            icon: Icon(
+              _showFilters ? Icons.filter_list_off : Icons.filter_list,
+            ),
             onPressed: () => setState(() => _showFilters = !_showFilters),
           ),
         ],
@@ -47,9 +49,7 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
           if (_showFilters) _buildFilterSection(categoryState),
 
           // 支出列表
-          Expanded(
-            child: _buildExpenseList(expenseState),
-          ),
+          Expanded(child: _buildExpenseList(expenseState)),
         ],
       ),
     );
@@ -58,6 +58,8 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
   Widget _buildFilterSection(CategoryListState categoryState) {
     final expenseState = ref.watch(expenseListProvider);
     final theme = Theme.of(context);
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
 
     return Container(
       padding: const EdgeInsets.all(AppSpacing.pagePadding),
@@ -65,132 +67,163 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
         color: theme.scaffoldBackgroundColor,
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withValues(alpha: 0.05),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
         ],
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // 分类筛选
-          Text(
-            '按分类筛选',
-            style: theme.textTheme.titleSmall,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Wrap(
-            spacing: AppSpacing.sm,
-            runSpacing: AppSpacing.sm,
-            children: [
-              // 全部选项
-              GestureDetector(
-                onTap: () => ref.read(expenseListProvider.notifier).filterByCategory(null),
-                child: Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.md,
-                    vertical: AppSpacing.sm,
-                  ),
-                  decoration: BoxDecoration(
-                    color: expenseState.selectedCategoryId == null
-                        ? AppColors.primary
-                        : AppColors.primary.withOpacity(0.1),
-                    borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
-                    border: Border.all(color: AppColors.primary),
-                  ),
-                  child: Text(
-                    '全部',
-                    style: theme.textTheme.labelLarge?.copyWith(
-                      color: expenseState.selectedCategoryId == null
-                          ? Colors.white
-                          : AppColors.primary,
-                    ),
-                  ),
-                ),
-              ),
-              ...categoryState.categories.map((category) {
-                final isSelected = expenseState.selectedCategoryId == category.id;
-                final color = Color(category.colorValue);
+      child: isLandscape ? _buildLandscapeLayout(categoryState, expenseState, theme)
+          : _buildPortraitLayout(categoryState, expenseState, theme),
+    );
+  }
 
-                return GestureDetector(
-                  onTap: () => ref
-                      .read(expenseListProvider.notifier)
-                      .filterByCategory(category.id),
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(
-                      horizontal: AppSpacing.md,
-                      vertical: AppSpacing.sm,
-                    ),
-                    decoration: BoxDecoration(
-                      color: isSelected ? color : color.withOpacity(0.1),
-                      borderRadius: BorderRadius.circular(AppSpacing.buttonRadius),
-                      border: Border.all(color: color),
-                    ),
-                    child: Text(
-                      category.name,
-                      style: theme.textTheme.labelLarge?.copyWith(
-                        color: isSelected ? Colors.white : color,
-                      ),
-                    ),
-                  ),
-                );
-              }),
+  Widget _buildPortraitLayout(
+      CategoryListState categoryState, ExpenseListState expenseState, ThemeData theme) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 分类筛选
+        Text('按分类筛选', style: theme.textTheme.titleSmall),
+        const SizedBox(height: AppSpacing.sm),
+        _buildCategoryChips(categoryState, expenseState),
+        const SizedBox(height: AppSpacing.md),
+
+        // 日期范围筛选
+        Text('按日期筛选', style: theme.textTheme.titleSmall),
+        const SizedBox(height: AppSpacing.sm),
+        _buildDateFilterRow(expenseState),
+      ],
+    );
+  }
+
+  Widget _buildLandscapeLayout(
+      CategoryListState categoryState, ExpenseListState expenseState, ThemeData theme) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        // 左侧分类筛选
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text('按分类筛选', style: theme.textTheme.titleSmall),
+              const SizedBox(height: AppSpacing.sm),
+              _buildCategoryChips(categoryState, expenseState),
             ],
           ),
+        ),
+        const SizedBox(width: AppSpacing.md),
 
-          const SizedBox(height: AppSpacing.md),
-
-          // 日期范围筛选
-          Text(
-            '按日期筛选',
-            style: theme.textTheme.titleSmall,
-          ),
-          const SizedBox(height: AppSpacing.sm),
-          Row(
+        // 右侧日期筛选
+        Expanded(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Expanded(
-                child: _buildDateFilterChip(
-                  label: '今天',
-                  isSelected: _isTodayFilter(),
-                  onTap: () => _applyDateFilter(DateRange.today),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _buildDateFilterChip(
-                  label: '本周',
-                  isSelected: _isThisWeekFilter(),
-                  onTap: () => _applyDateFilter(DateRange.thisWeek),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.sm),
-              Expanded(
-                child: _buildDateFilterChip(
-                  label: '本月',
-                  isSelected: _isThisMonthFilter(),
-                  onTap: () => _applyDateFilter(DateRange.thisMonth),
-                ),
-              ),
+              Text('按日期筛选', style: theme.textTheme.titleSmall),
+              const SizedBox(height: AppSpacing.sm),
+              _buildDateFilterRow(expenseState),
             ],
           ),
+        ),
+      ],
+    );
+  }
 
-          if (expenseState.hasFilters) ...[
-            const SizedBox(height: AppSpacing.md),
-            Row(
-              children: [
-                Expanded(
-                  child: OutlinedButton(
-                    onPressed: () =>
-                        ref.read(expenseListProvider.notifier).clearFilters(),
-                    child: const Text('清除筛选'),
-                  ),
-                ),
-              ],
+  Widget _buildCategoryChips(
+      CategoryListState categoryState, ExpenseListState expenseState) {
+    final theme = Theme.of(context);
+    return Wrap(
+      spacing: AppSpacing.sm,
+      runSpacing: AppSpacing.sm,
+      children: [
+        GestureDetector(
+          onTap: () =>
+              ref.read(expenseListProvider.notifier).filterByCategory(null),
+          child: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: AppSpacing.md,
+              vertical: AppSpacing.sm,
             ),
-          ],
-        ],
-      ),
+            decoration: BoxDecoration(
+              color: expenseState.selectedCategoryId == null
+                  ? AppColors.primary
+                  : AppColors.primary.withOpacity(0.1),
+              borderRadius: BorderRadius.circular(
+                AppSpacing.buttonRadius,
+              ),
+              border: Border.all(color: AppColors.primary),
+            ),
+            child: Text(
+              '全部',
+              style: theme.textTheme.labelLarge?.copyWith(
+                color: expenseState.selectedCategoryId == null
+                    ? Colors.white
+                    : AppColors.primary,
+              ),
+            ),
+          ),
+        ),
+        ...categoryState.categories.map((category) {
+          final isSelected = expenseState.selectedCategoryId == category.id;
+          final color = Color(category.colorValue);
+
+          return GestureDetector(
+            onTap: () => ref
+                .read(expenseListProvider.notifier)
+                .filterByCategory(category.id),
+            child: Container(
+              padding: const EdgeInsets.symmetric(
+                horizontal: AppSpacing.md,
+                vertical: AppSpacing.sm,
+              ),
+              decoration: BoxDecoration(
+                color: isSelected ? color : color.withOpacity(0.1),
+                borderRadius: BorderRadius.circular(
+                  AppSpacing.buttonRadius,
+                ),
+                border: Border.all(color: color),
+              ),
+              child: Text(
+                category.name,
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: isSelected ? Colors.white : color,
+                ),
+              ),
+            ),
+          );
+        }),
+      ],
+    );
+  }
+
+  Widget _buildDateFilterRow(ExpenseListState expenseState) {
+    return Row(
+      children: [
+        Expanded(
+          child: _buildDateFilterChip(
+            label: '今天',
+            isSelected: _isTodayFilter(),
+            onTap: () => _applyDateFilter(DateRange.today),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _buildDateFilterChip(
+            label: '本周',
+            isSelected: _isThisWeekFilter(),
+            onTap: () => _applyDateFilter(DateRange.thisWeek),
+          ),
+        ),
+        const SizedBox(width: AppSpacing.sm),
+        Expanded(
+          child: _buildDateFilterChip(
+            label: '本月',
+            isSelected: _isThisMonthFilter(),
+            onTap: () => _applyDateFilter(DateRange.thisMonth),
+          ),
+        ),
+      ],
     );
   }
 
@@ -231,7 +264,8 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
     final today = DateTime(now.year, now.month, now.day);
     final tomorrow = today.add(const Duration(days: 1));
 
-    return state.startDate == today && state.endDate == tomorrow.subtract(const Duration(seconds: 1));
+    return state.startDate == today &&
+        state.endDate == tomorrow.subtract(const Duration(seconds: 1));
   }
 
   bool _isThisWeekFilter() {
@@ -243,7 +277,8 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
     final monday = DateTime(now.year, now.month, now.day - weekday + 1);
     final nextMonday = monday.add(const Duration(days: 7));
 
-    return state.startDate == monday && state.endDate == nextMonday.subtract(const Duration(seconds: 1));
+    return state.startDate == monday &&
+        state.endDate == nextMonday.subtract(const Duration(seconds: 1));
   }
 
   bool _isThisMonthFilter() {
@@ -254,7 +289,8 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
     final firstDay = DateTime(now.year, now.month, 1);
     final nextMonth = DateTime(now.year, now.month + 1, 1);
 
-    return state.startDate == firstDay && state.endDate == nextMonth.subtract(const Duration(seconds: 1));
+    return state.startDate == firstDay &&
+        state.endDate == nextMonth.subtract(const Duration(seconds: 1));
   }
 
   void _applyDateFilter(DateRange range) {
@@ -265,16 +301,24 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
     switch (range) {
       case DateRange.today:
         start = DateTime(now.year, now.month, now.day);
-        end = start.add(const Duration(days: 1)).subtract(const Duration(seconds: 1));
+        end = start
+            .add(const Duration(days: 1))
+            .subtract(const Duration(seconds: 1));
         break;
       case DateRange.thisWeek:
         final weekday = now.weekday;
         start = DateTime(now.year, now.month, now.day - weekday + 1);
-        end = start.add(const Duration(days: 7)).subtract(const Duration(seconds: 1));
+        end = start
+            .add(const Duration(days: 7))
+            .subtract(const Duration(seconds: 1));
         break;
       case DateRange.thisMonth:
         start = DateTime(now.year, now.month, 1);
-        end = DateTime(now.year, now.month + 1, 1).subtract(const Duration(seconds: 1));
+        end = DateTime(
+          now.year,
+          now.month + 1,
+          1,
+        ).subtract(const Duration(seconds: 1));
         break;
     }
 
@@ -297,9 +341,7 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
       if (state.hasFilters) {
         return EmptyState.search();
       }
-      return EmptyState.expenses(
-        onAdd: () => _showAddExpenseSheet(context),
-      );
+      return EmptyState.expenses(onAdd: () => _showAddExpenseSheet(context));
     }
 
     // 按日期分组
@@ -353,11 +395,13 @@ class _ExpenseListScreenState extends ConsumerState<ExpenseListScreen> {
             ),
           ),
         ),
-        ...expenses.map((expense) => ExpenseTile(
-              expense: expense,
-              onTap: () => _showExpenseDetail(expense.id!),
-              onDelete: () => _deleteExpense(expense.id!),
-            )),
+        ...expenses.map(
+          (expense) => ExpenseTile(
+            expense: expense,
+            onTap: () => _showExpenseDetail(expense.id!),
+            onDelete: () => _deleteExpense(expense.id!),
+          ),
+        ),
       ],
     );
   }
