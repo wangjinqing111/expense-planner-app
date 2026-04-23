@@ -301,6 +301,7 @@ class _AddCategoryScreenState extends ConsumerState<AddCategoryScreen> {
       name: _nameController.text.trim(),
       icon: _selectedIcon,
       colorValue: AppColors.categoryColors[_selectedColorIndex].value,
+      createdAt: widget.category?.createdAt,
     );
 
     bool success;
