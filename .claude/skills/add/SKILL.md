@@ -108,6 +108,7 @@ YYYY-MM-DD HH:MM
 1. 确保所有测试通过
 2. 确保 `flutter analyze` 无错误
 3. 只暂存相关文件
+4. z_guides修改也需要提交
 
 **提交信息格式**：
 ```
