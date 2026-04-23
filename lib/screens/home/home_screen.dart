@@ -42,11 +42,13 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
     });
   }
 
-  final List<Widget> _screens = const [
-    _DashboardScreen(),
-    ExpenseListScreen(),
-    SummaryScreen(),
-    CategoryListScreen(),
+  List<Widget> get _screens => [
+    _DashboardScreen(onNavigateToExpenseList: () {
+      setState(() => _currentIndex = 1);
+    }),
+    const ExpenseListScreen(),
+    const SummaryScreen(),
+    const CategoryListScreen(),
   ];
 
   @override
@@ -98,7 +100,9 @@ class _HomeScreenState extends ConsumerState<HomeScreen> {
 
 /// 仪表盘屏幕
 class _DashboardScreen extends ConsumerWidget {
-  const _DashboardScreen();
+  final VoidCallback? onNavigateToExpenseList;
+
+  const _DashboardScreen({this.onNavigateToExpenseList});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
@@ -219,9 +223,7 @@ class _DashboardScreen extends ConsumerWidget {
                 children: [
                   Text('最近支出', style: theme.textTheme.titleMedium),
                   TextButton(
-                    onPressed: () {
-                      // 导航到支出列表
-                    },
+                    onPressed: onNavigateToExpenseList,
                     child: const Text('查看全部'),
                   ),
                 ],
