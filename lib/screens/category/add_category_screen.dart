@@ -124,7 +124,7 @@ class _AddCategoryScreenState extends ConsumerState<AddCategoryScreen> {
                     height: 80,
                     decoration: BoxDecoration(
                       color: AppColors.categoryColors[_selectedColorIndex]
-                          .withOpacity(0.1),
+                          .withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(20),
                     ),
                     child: Icon(
@@ -155,10 +155,7 @@ class _AddCategoryScreenState extends ConsumerState<AddCategoryScreen> {
                 const SizedBox(height: AppSpacing.lg),
 
                 // 图标选择
-                Text(
-                  '选择图标',
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text('选择图标', style: theme.textTheme.titleSmall),
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: AppSpacing.sm,
@@ -173,7 +170,7 @@ class _AddCategoryScreenState extends ConsumerState<AddCategoryScreen> {
                         decoration: BoxDecoration(
                           color: isSelected
                               ? AppColors.categoryColors[_selectedColorIndex]
-                                  .withOpacity(0.2)
+                                    .withOpacity(0.2)
                               : AppColors.border.withOpacity(0.3),
                           borderRadius: BorderRadius.circular(12),
                           border: Border.all(
@@ -196,15 +193,14 @@ class _AddCategoryScreenState extends ConsumerState<AddCategoryScreen> {
                 const SizedBox(height: AppSpacing.lg),
 
                 // 颜色选择
-                Text(
-                  '选择颜色',
-                  style: theme.textTheme.titleSmall,
-                ),
+                Text('选择颜色', style: theme.textTheme.titleSmall),
                 const SizedBox(height: AppSpacing.sm),
                 Wrap(
                   spacing: AppSpacing.sm,
                   runSpacing: AppSpacing.sm,
-                  children: AppColors.categoryColors.asMap().entries.map((entry) {
+                  children: AppColors.categoryColors.asMap().entries.map((
+                    entry,
+                  ) {
                     final index = entry.key;
                     final color = entry.value;
                     final isSelected = _selectedColorIndex == index;
@@ -218,7 +214,9 @@ class _AddCategoryScreenState extends ConsumerState<AddCategoryScreen> {
                           color: color,
                           shape: BoxShape.circle,
                           border: Border.all(
-                            color: isSelected ? Colors.white : Colors.transparent,
+                            color: isSelected
+                                ? Colors.white
+                                : Colors.transparent,
                             width: 3,
                           ),
                           boxShadow: isSelected
@@ -306,11 +304,13 @@ class _AddCategoryScreenState extends ConsumerState<AddCategoryScreen> {
 
     bool success;
     if (isEditing) {
-      success =
-          await ref.read(categoryListProvider.notifier).updateCategory(category);
+      success = await ref
+          .read(categoryListProvider.notifier)
+          .updateCategory(category);
     } else {
-      success =
-          await ref.read(categoryListProvider.notifier).addCategory(category);
+      success = await ref
+          .read(categoryListProvider.notifier)
+          .addCategory(category);
     }
 
     if (success) {

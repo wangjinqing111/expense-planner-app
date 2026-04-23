@@ -20,9 +20,7 @@ class CategoryListScreen extends ConsumerWidget {
     final categoryState = ref.watch(categoryListProvider);
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('分类管理'),
-      ),
+      appBar: AppBar(title: const Text('分类管理')),
       body: _buildCategoryList(context, ref, categoryState),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddCategorySheet(context),
@@ -48,9 +46,7 @@ class CategoryListScreen extends ConsumerWidget {
     }
 
     if (state.categories.isEmpty) {
-      return EmptyState.categories(
-        onAdd: () => _showAddCategorySheet(context),
-      );
+      return EmptyState.categories(onAdd: () => _showAddCategorySheet(context));
     }
 
     return RefreshIndicator(
@@ -58,10 +54,7 @@ class CategoryListScreen extends ConsumerWidget {
         await ref.read(categoryListProvider.notifier).loadCategories();
       },
       child: ListView.builder(
-        padding: const EdgeInsets.only(
-          top: AppSpacing.sm,
-          bottom: 80,
-        ),
+        padding: const EdgeInsets.only(top: AppSpacing.sm, bottom: 80),
         itemCount: state.categories.length,
         itemBuilder: (context, index) {
           final category = state.categories[index];
@@ -86,10 +79,7 @@ class CategoryListScreen extends ConsumerWidget {
         alignment: Alignment.centerRight,
         padding: const EdgeInsets.only(right: AppSpacing.lg),
         color: AppColors.error,
-        child: const Icon(
-          Icons.delete,
-          color: Colors.white,
-        ),
+        child: const Icon(Icons.delete, color: Colors.white),
       ),
       confirmDismiss: (direction) => _confirmDelete(context, category),
       onDismissed: (direction) => _deleteCategory(ref, category),
@@ -113,10 +103,7 @@ class CategoryListScreen extends ConsumerWidget {
                     color: color.withOpacity(0.1),
                     borderRadius: BorderRadius.circular(AppSpacing.sm),
                   ),
-                  child: Icon(
-                    _getIconData(category.icon),
-                    color: color,
-                  ),
+                  child: Icon(_getIconData(category.icon), color: color),
                 ),
                 const SizedBox(width: AppSpacing.md),
 
@@ -165,8 +152,9 @@ class CategoryListScreen extends ConsumerWidget {
 
   void _deleteCategory(WidgetRef ref, Category category) async {
     try {
-      final success =
-          await ref.read(categoryListProvider.notifier).deleteCategory(category.id!);
+      final success = await ref
+          .read(categoryListProvider.notifier)
+          .deleteCategory(category.id!);
       if (!success) {
         // 重新加载以显示最新状态
         await ref.read(categoryListProvider.notifier).loadCategories();
